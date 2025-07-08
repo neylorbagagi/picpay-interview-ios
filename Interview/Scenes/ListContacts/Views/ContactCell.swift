@@ -22,6 +22,10 @@ class ContactCell: UITableViewCell {
         configureViews()
     }
     
+    override func prepareForReuse() {
+            contactImage.image = nil
+        }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         
