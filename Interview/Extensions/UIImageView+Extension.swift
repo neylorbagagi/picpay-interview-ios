@@ -13,6 +13,7 @@ let cache = NSCache<NSString, UIImage>()
 extension UIImageView {
     
     func setImage(from stringURL: String) {
+        image = UIImage(systemName: "photo")
         
         guard let url = URL(string: stringURL) else { return }
         
