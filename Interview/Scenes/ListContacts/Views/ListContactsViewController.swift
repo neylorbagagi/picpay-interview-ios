@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 
 class UserIdsLegacy {
     static let legacyIds = [10, 11, 12, 13]
@@ -8,7 +9,10 @@ class UserIdsLegacy {
     }
 }
 
-class ListContactsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ListContactsViewController: UIViewController {
+    
+    var cancellables = Set<AnyCancellable>()
+    
     lazy var activity: UIActivityIndicatorView = {
         let activity = UIActivityIndicatorView()
         activity.hidesWhenStopped = true
@@ -28,7 +32,6 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
         return tableView
     }()
     
-    var contacts = [Contact]()
     var viewModel: ListContactsViewModel!
     
     init() {
@@ -48,12 +51,15 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         viewModel = ListContactsViewModel()
+        viewModel.viewDidLoad?()
+        
+        binding()
+        
         configureViews()
-        
         navigationController?.title = "Lista de contatos"
-        
-        loadData()
+
     }
     
     func configureViews() {
@@ -67,12 +73,32 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
         ])
     }
     
+    func binding() {
+        viewModel.contactsSubject
+            .receive(on: DispatchQueue.main)
+            .sink { completion in
+                if case let .failure(error) = completion {
+                    let alert = UIAlertController(title: "Ops, ocorreu um erro", message: error.localizedDescription, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(alert, animated: true)
+                }
+            } receiveValue: { [weak self] contacts in
+                guard let self = self else { return }
+                self.tableView.reloadData()
+                self.activity.stopAnimating()
+            }.store(in: &cancellables)
+    }
+    
     func isLegacy(contact: Contact) -> Bool {
         return UserIdsLegacy.isLegacy(id: contact.id)
     }
     
+}
+
+extension ListContactsViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return contacts.count
+        return viewModel.contacts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -80,7 +106,7 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
             return UITableViewCell()
         }
         
-        let contact = contacts[indexPath.row]
+        let contact = viewModel.contacts[indexPath.row]
         cell.fullnameLabel.text = contact.name
         cell.contactImage.setImage(from: contact.photoURL)
         
@@ -88,7 +114,7 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let contato = contacts[indexPath.row - 1]
+        let contato = viewModel.contacts[indexPath.row]
         
         guard isLegacy(contact: contato) else {
             let alert = UIAlertController(title: "Você tocou em", message: "\(contato.name)", preferredStyle: .alert)
@@ -100,24 +126,5 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
         let alert = UIAlertController(title: "Atenção", message:"Você tocou no contato sorteado", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alert, animated: true)
-    }
-    
-    func loadData() {
-        viewModel.loadContacts { contacts, error in
-            DispatchQueue.main.async {
-                if let error = error {
-                    print(error)
-                    
-                    let alert = UIAlertController(title: "Ops, ocorreu um erro", message: error.localizedDescription, preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(alert, animated: true)
-                    return
-                }
-                
-                self.contacts = contacts ?? []
-                self.tableView.reloadData()
-                self.activity.stopAnimating()
-            }
-        }
     }
 }
