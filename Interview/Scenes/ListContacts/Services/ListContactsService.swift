@@ -5,12 +5,14 @@ private let apiURL = "https://669ff1b9b132e2c136ffa741.mockapi.io/picpay/ios/int
 class ListContactService {
     func fetchContacts(completion: @escaping ([Contact]?, Error?) -> Void) {
         guard let api = URL(string: apiURL) else {
+            // TODO: Adicionar retorno de error de URL inválida
             return
         }
         
         let session = URLSession.shared
         let task = session.dataTask(with: api) { (data, response, error) in
             guard let jsonData = data else {
+                // TODO: Adicionar retorno de código response
                 return
             }
             

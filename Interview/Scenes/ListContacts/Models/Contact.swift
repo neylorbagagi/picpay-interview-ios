@@ -11,6 +11,7 @@ import Foundation
 ]
 */
 
+// TODO: Esse model pode ser um struct
 class Contact: Codable {
     var id: Int
     var name: String = ""

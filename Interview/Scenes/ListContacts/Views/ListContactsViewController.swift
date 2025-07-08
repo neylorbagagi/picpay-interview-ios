@@ -82,14 +82,7 @@ class ListContactsViewController: UIViewController, UITableViewDataSource, UITab
         
         let contact = contacts[indexPath.row]
         cell.fullnameLabel.text = contact.name
-        
-        if let urlPhoto = URL(string: contact.photoURL) {
-            do {
-                let data = try Data(contentsOf: urlPhoto)
-                let image = UIImage(data: data)
-                cell.contactImage.image = image
-            } catch _ {}
-        }
+        cell.contactImage.setImage(from: contact.photoURL)
         
         return cell
     }
