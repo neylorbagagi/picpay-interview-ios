@@ -1,5 +1,6 @@
 import UIKit
 import Combine
+import FeatureFoundation
 
 class UserIdsLegacy {
     static let legacyIds = [10, 11, 12, 13]
@@ -59,7 +60,6 @@ class ListContactsViewController: UIViewController {
         
         configureViews()
         navigationController?.title = "Lista de contatos"
-
     }
     
     func configureViews() {
@@ -108,7 +108,7 @@ extension ListContactsViewController: UITableViewDataSource, UITableViewDelegate
         
         let contact = viewModel.contacts[indexPath.row]
         cell.fullnameLabel.text = contact.name
-//        cell.contactImage.setImage(from: contact.photoURL)
+        cell.contactImage.setImage(from: contact.photoURL)
         
         return cell
     }
