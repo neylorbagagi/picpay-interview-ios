@@ -73,7 +73,7 @@ class ListContactsViewController: UIViewController {
         ])
     }
     
-    func binding() {
+    private func binding() {
         viewModel.contactsSubject
             .receive(on: DispatchQueue.main)
             .sink { completion in
