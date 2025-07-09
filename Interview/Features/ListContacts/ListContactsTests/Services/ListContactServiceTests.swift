@@ -1,5 +1,5 @@
 import XCTest
-@testable import Interview
+@testable import ListContacts
 
 class ListContactServiceTests: XCTestCase {
     var service: ListContactService!

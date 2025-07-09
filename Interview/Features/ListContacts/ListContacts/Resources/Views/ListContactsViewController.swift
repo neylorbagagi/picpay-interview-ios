@@ -34,7 +34,7 @@ class ListContactsViewController: UIViewController {
     
     var viewModel: ListContactsViewModel!
     
-    init() {
+    public init() {
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,7 +108,7 @@ extension ListContactsViewController: UITableViewDataSource, UITableViewDelegate
         
         let contact = viewModel.contacts[indexPath.row]
         cell.fullnameLabel.text = contact.name
-        cell.contactImage.setImage(from: contact.photoURL)
+//        cell.contactImage.setImage(from: contact.photoURL)
         
         return cell
     }
