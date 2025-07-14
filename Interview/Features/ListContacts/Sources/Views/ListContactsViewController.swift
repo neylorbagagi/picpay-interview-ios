@@ -6,6 +6,7 @@ final class ListContactsViewController: UIViewController {
     
     private var viewModel: ListContactsViewModel
     private var displayState: ListContactsDisplayState
+    private var eventStream: ListContactsEventStream
     private var cancellables = Set<AnyCancellable>()
 
     lazy private var tableView: UITableView = {
@@ -22,9 +23,12 @@ final class ListContactsViewController: UIViewController {
         return tableView
     }()
     
-    public init(viewModel: ListContactsViewModel) {
+    public init(
+        viewModel: ListContactsViewModel,
+        eventStream: ListContactsEventStream) {
         self.viewModel = viewModel
         self.displayState = .emptyDisplayState()
+        self.eventStream = eventStream
         super.init(nibName: nil, bundle: nil)
         
         setupViews()
@@ -37,7 +41,7 @@ final class ListContactsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel.viewDidLoad?()
+        eventStream.send(.viewDidLoad)
     }
     
     private func setupViews() {

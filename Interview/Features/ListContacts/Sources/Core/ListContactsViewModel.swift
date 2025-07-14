@@ -9,8 +9,6 @@ final class ListContactsViewModel {
         $displayState
     }
     
-    var viewDidLoad: (() -> Void)?
-    
     private var cancellables = Set<AnyCancellable>()
     private let dataProvider: ListContactsDataProviding
     
@@ -22,10 +20,6 @@ final class ListContactsViewModel {
     }
     
     private func binding() {
-        viewDidLoad = { [weak self] in
-            self?.dataProvider.getListContactsData()
-        }
-        
         dataProvider.dataModel
             .sink { [weak self] dataModel in
                 self?.updateDisplayState(data: dataModel)
