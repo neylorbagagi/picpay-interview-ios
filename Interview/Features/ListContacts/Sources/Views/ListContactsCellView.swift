@@ -1,6 +1,6 @@
 import UIKit
 
-class ContactCell: UITableViewCell {
+final class ListContactsCellView: UITableViewCell {
     lazy var contactImage: UIImageView = {
         let imgView = UIImageView()
         imgView.translatesAutoresizingMaskIntoConstraints = false
