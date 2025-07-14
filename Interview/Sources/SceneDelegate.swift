@@ -10,7 +10,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             let window = UIWindow(windowScene: windowScene)
             
             window.rootViewController = UINavigationController(
-                rootViewController: ListContacts().build()
+                rootViewController: ListContactsBuilder().build()
             )
             self.window = window
             window.makeKeyAndVisible()
